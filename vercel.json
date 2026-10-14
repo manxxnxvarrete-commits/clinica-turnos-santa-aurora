@@ -1,0 +1,8 @@
+{
+  "$schema": "https://openapi.vercel.sh/vercel.json",
+  "functions": {
+    "app.py": {
+      "excludeFiles": "{frontend/node_modules/**,frontend/src/**,frontend/dist/**,frontend/.angular/**,frontend/package-lock.json}"
+    }
+  }
+}
