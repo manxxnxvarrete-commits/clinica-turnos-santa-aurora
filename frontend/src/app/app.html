@@ -24,7 +24,7 @@
     </div>
     <button class="sound-control" type="button" (click)="toggleSound()">
       <span class="sound-icon" aria-hidden="true">{{ soundEnabled ? '◖)))' : '◖' }}</span>
-      {{ soundEnabled ? 'Avisos activados' : 'Activar avisos' }}
+      {{ soundEnabled ? 'Voz y sonido activos' : 'Activar voz y sonido' }}
     </button>
   </div>
 
@@ -177,7 +177,7 @@
         <span class="display-live"><span class="connection-dot"></span> En vivo</span>
         <span>{{ now | date: 'h:mm a' }}</span>
         <button type="button" class="display-sound" [class.sound-on]="soundEnabled" (click)="toggleSound()" [attr.aria-pressed]="soundEnabled">
-          <span aria-hidden="true">{{ soundEnabled ? '◖)))' : '◖' }}</span> {{ soundEnabled ? 'Sonido activo' : 'Activar sonido' }}
+          <span aria-hidden="true">{{ soundEnabled ? '◖)))' : '◖' }}</span> {{ soundEnabled ? 'Voz activa' : 'Activar voz y sonido' }}
         </button>
       </div>
     </div>

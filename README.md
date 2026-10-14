@@ -14,7 +14,7 @@ Aplicación didáctica para organizar la atención de una clínica. Incluye una 
 - Muestra la fila en orden de llegada y permite asignar el siguiente turno a cualquiera de las cuatro ventanillas.
 - Cada ventanilla puede marcarse ocupada o disponible. Al finalizar una atención, se libera y llama automáticamente al turno siguiente.
 - La pantalla de sala se actualiza en vivo y muestra el turno llamado, la ventanilla y los lugares ocupados.
-- Incluye aviso sonoro y anuncio de voz en español. Activa el sonido desde la pantalla para permitir la reproducción del navegador.
+- Incluye aviso sonoro y voz en español al llamar turnos y cambiar el estado de una ventanilla; anuncia el número de ventanilla, si está ocupada o disponible, y el siguiente turno cuando corresponda. Activa voz y sonido desde la pantalla para permitir la reproducción del navegador.
 - Guarda la información en SQLite al trabajar localmente. Para una publicación compartida, admite PostgreSQL mediante la variable DATABASE_URL.
 
 La aplicación no pide nombres ni datos médicos. Es un prototipo escolar sin inicio de sesión; no debe usarse para gestionar pacientes reales.

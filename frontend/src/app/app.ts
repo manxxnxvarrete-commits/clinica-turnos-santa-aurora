@@ -37,6 +37,7 @@ export class App implements OnInit, OnDestroy {
   private readonly subscription = new Subscription();
   private hasInitialState = false;
   private lastAnnouncedId: number | null = null;
+  private readonly lastStationStatuses = new Map<number, StationStatus>();
   private audioContext: AudioContext | null = null;
 
   constructor(private readonly api: QueueApiService) {}
@@ -59,11 +60,38 @@ export class App implements OnInit, OnDestroy {
     this.api.getState().subscribe({
       next: (nextState) => {
         const latest = nextState.latest_call;
-        if (this.hasInitialState && latest && latest.id !== this.lastAnnouncedId) {
+        const newCall = this.hasInitialState && latest !== null && latest.id !== this.lastAnnouncedId;
+        const changedStations = this.hasInitialState
+          ? nextState.stations.filter((station) => {
+              const previousStatus = this.lastStationStatuses.get(station.number);
+              return previousStatus !== undefined && previousStatus !== station.status;
+            })
+          : [];
+        const releasedForNextCall = newCall && latest?.station_number
+          ? changedStations.find(
+              (station) => station.number === latest.station_number && station.status === 'available',
+            )
+          : undefined;
+
+        if (releasedForNextCall && latest) {
+          this.announceMessage(
+            'Ventanilla ' + releasedForNextCall.number + ' disponible. Turno ' + latest.code +
+            ', favor de pasar a ventanilla ' + releasedForNextCall.number + '.',
+          );
+        }
+        for (const station of changedStations) {
+          if (station.number !== releasedForNextCall?.number) {
+            this.announceStationStatus(station.number, station.status);
+          }
+        }
+        if (newCall && latest && !releasedForNextCall) {
           this.announce(latest);
         }
         this.hasInitialState = true;
         this.lastAnnouncedId = latest?.id ?? null;
+        for (const station of nextState.stations) {
+          this.lastStationStatuses.set(station.number, station.status);
+        }
         this.state = nextState;
         this.now = new Date();
         this.error = '';
@@ -145,13 +173,22 @@ export class App implements OnInit, OnDestroy {
     const destination = ticket.station_number
       ? 'favor de pasar a ventanilla ' + ticket.station_number
       : 'favor de acercarse a recepción';
+    this.announceMessage('Turno ' + ticket.code + ', ' + destination + '.');
+  }
+
+  private announceStationStatus(number: number, status: StationStatus): void {
+    const message = status === 'occupied'
+      ? 'Ventanilla ' + number + ' ocupada.'
+      : 'Ventanilla ' + number + ' disponible.';
+    this.announceMessage(message);
+  }
+
+  private announceMessage(message: string): void {
     if (!this.soundEnabled) return;
 
     this.playBell();
     if ('speechSynthesis' in window) {
-      const announcement = new SpeechSynthesisUtterance(
-        'Turno ' + ticket.code + ', ' + destination + '.',
-      );
+      const announcement = new SpeechSynthesisUtterance(message);
       announcement.lang = 'es-MX';
       announcement.rate = 0.88;
       window.speechSynthesis.cancel();
