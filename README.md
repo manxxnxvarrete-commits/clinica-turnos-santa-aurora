@@ -2,6 +2,12 @@
 
 Aplicación didáctica para organizar la atención de una clínica. Incluye una consola de recepción y una pantalla para la sala de espera.
 
+## Proyecto publicado
+
+- Aplicación: https://clinica-turnos-santa-aurora.vercel.app/
+- Repositorio público: https://github.com/manxxnxvarrete-commits/clinica-turnos-santa-aurora
+- Vercel despliega automáticamente los cambios que llegan a `main`.
+
 ## Funciones
 
 - Genera turnos consecutivos como **A01**, **A02** y elige entre consulta general, laboratorio, farmacia e imagenología.
@@ -12,6 +18,10 @@ Aplicación didáctica para organizar la atención de una clínica. Incluye una 
 - Guarda la información en SQLite al trabajar localmente. Para una publicación compartida, admite PostgreSQL mediante la variable DATABASE_URL.
 
 La aplicación no pide nombres ni datos médicos. Es un prototipo escolar sin inicio de sesión; no debe usarse para gestionar pacientes reales.
+
+### Persistencia en la demo publicada
+
+El despliegue actual no tiene una base PostgreSQL configurada. En Vercel usa SQLite temporal, por lo que los turnos pueden reiniciarse y no se garantiza que varias instancias compartan el mismo estado. Para una demostración consistente con varias pantallas, configura `DATABASE_URL` con una base PostgreSQL antes de usarla. No guardes datos reales de pacientes en esta demo.
 
 ## Ejecutar en Windows
 
@@ -34,25 +44,17 @@ Abre http://localhost:4200. Angular envía las solicitudes /api a Flask en http:
 
 El proyecto tiene una compilación de Angular que copia el sitio a public/, mientras Flask expone el API desde app.py. Vercel detecta Flask y conserva los archivos de public/ como contenido estático.
 
-1. Crea o conecta un repositorio Git y elige la carpeta raíz clinica-turnos como proyecto de Vercel.
-2. En la configuración de Vercel, agrega DATABASE_URL con la cadena de conexión de una base PostgreSQL compartida.
-3. Despliega el proyecto. El script build_frontend.py instala dependencias y compila Angular durante la compilación de Vercel.
-
-El archivo SQLite que se usa como alternativa local dentro de Vercel vive en almacenamiento temporal y no sirve como base de datos compartida. Configura PostgreSQL para que recepción y sala vean los mismos turnos aunque las funciones se reinicien.
+El repositorio ya está conectado al proyecto de Vercel. El script `build_frontend.py` instala dependencias y compila Angular durante cada despliegue. Para habilitar persistencia compartida, agrega `DATABASE_URL` en la configuración del proyecto de Vercel con la cadena de una base PostgreSQL.
 
 También puedes desplegar desde una terminal con sesión iniciada en Vercel:
 
     npx vercel
     npx vercel --prod
 
-## Publicar en GitHub
+## Publicar cambios en GitHub
 
-Inicializa Git en esta carpeta y agrega la URL del repositorio que crees en GitHub:
-
-    git init -b main
     git add .
-    git commit -m "Crear sistema de turnos para clínica"
-    git remote add origin https://github.com/USUARIO/clinica-turnos.git
-    git push -u origin main
+    git commit -m "Describe el cambio"
+    git push origin main
 
-Después de conectar GitHub con Vercel, los siguientes cambios pueden desplegarse desde ese repositorio.
+Vercel iniciará el siguiente despliegue al recibir los cambios de `main`.
