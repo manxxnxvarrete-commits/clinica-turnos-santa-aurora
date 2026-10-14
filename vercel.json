@@ -1,5 +1,6 @@
 {
   "$schema": "https://openapi.vercel.sh/vercel.json",
+  "buildCommand": "python build_frontend.py",
   "functions": {
     "app.py": {
       "excludeFiles": "{frontend/node_modules/**,frontend/src/**,frontend/dist/**,frontend/.angular/**,frontend/package-lock.json}"
